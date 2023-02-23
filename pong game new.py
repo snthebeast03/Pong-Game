@@ -10,7 +10,7 @@ if red == 1:
     black = 0
 else:
     black = 1
-updown = random.randint(-5,5)
+updown = random.choice([1,2,3,4,5,-1,-2,-3,-4,-5])
 
 WHITE = (255,255,255)
 FPS = 60
