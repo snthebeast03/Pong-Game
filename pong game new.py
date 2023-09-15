@@ -11,7 +11,8 @@ if red == 1:
 else:
     black = 1
 updown = random.choice([1,2,3,4,5,-1,-2,-3,-4,-5])
-
+ball_speed = 5
+paddle_speed = 10
 WHITE = (255,255,255)
 FPS = 60
 fps = pygame.time.Clock()
@@ -29,14 +30,14 @@ class Paddles(pygame.sprite.Sprite):
         pressed_keys = pygame.key.get_pressed()
         if self == redplayer:
             if pressed_keys[K_UP]:
-                self.rect.move_ip(0, -10)
+                self.rect.move_ip(0, -1*paddle_speed)
             if pressed_keys[K_DOWN]:
-                self.rect.move_ip(0, 10)
+                self.rect.move_ip(0, paddle_speed)
         elif self == blackplayer:
             if pressed_keys[K_w]:
-                self.rect.move_ip(0, -10)
+                self.rect.move_ip(0, -1*paddle_speed)
             if pressed_keys[K_s]:
-                self.rect.move_ip(0, 10)
+                self.rect.move_ip(0, paddle_speed)
 
 class Walls(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -56,9 +57,9 @@ class Ball(pygame.sprite.Sprite):
     def move(self):
         global updown
         if red == 1:
-            self.rect.move_ip(5,updown)
+            self.rect.move_ip(ball_speed,updown)
         elif black == 1:
-            self.rect.move_ip(-5,updown)
+            self.rect.move_ip(-1*ball_speed,updown)
 
 blackplayer = Paddles("black paddle.jpg", (50,300))
 #blackplayer.imge = "black paddle.jpg"
@@ -78,6 +79,8 @@ all_sprites.add(downwall)
 all_sprites.add(ball)
 
 q = True
+i=20
+start_time = time.time()
 while q:
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -94,9 +97,17 @@ while q:
         if red == 1:
             red = 0
             black = 1
+            if updown in range(1,6):
+                updown = random.choice([1,2,3,4,5])
+            else:
+                updown = random.choice([-1,-2,-3,-4,-5])
         else:
             red = 1
             black = 0
+            if updown in range(1,6):
+                updown = random.choice([1,2,3,4,5])
+            else:
+                updown = random.choice([-1,-2,-3,-4,-5])
     if ball.rect.colliderect(upwall.rect):
         updown = random.randint(1,5)
     if ball.rect.colliderect(downwall.rect):
@@ -108,5 +119,13 @@ while q:
         time.sleep(2.5)
         pygame.quit()
         sys.exit()
+    print(time.time()-start_time)
+    
+    if round(time.time()-start_time)>1 and int(time.time()-start_time) % i == 0:
+        ball_speed += 1
+        paddle_speed += 1
+        i=i+20
+
+
     pygame.display.update()
     fps.tick(FPS)
