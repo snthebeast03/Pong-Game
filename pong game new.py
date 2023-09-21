@@ -19,6 +19,9 @@ fps = pygame.time.Clock()
 screen = pygame.display.set_mode((800, 600))
 screen.fill(WHITE)
 end_game_screen = pygame.image.load("gameover.jpeg")
+splash_screen = pygame.image.load("splash screen.png")
+bigfont = pygame.font.Font('freesansbold.ttf', 30)
+smallfont = pygame.font.Font('freesansbold.ttf', 20)
 
 class Paddles(pygame.sprite.Sprite):
     def __init__(self, img, pos):
@@ -81,51 +84,67 @@ all_sprites.add(ball)
 q = True
 i=20
 start_time = time.time()
+flag = False
 while q:
+    presses = pygame.key.get_pressed()
     for event in pygame.event.get():
-        if event.type == QUIT:
+        if event.type == QUIT or presses[K_ESCAPE]:
             screen.blit(end_game_screen, (0,0))
             pygame.display.update()
             time.sleep(2)
             pygame.quit()
             sys.exit()
-    screen.fill(WHITE)
-    for entity in all_sprites:
-        screen.blit(entity.image, entity.rect)
-        entity.move()
-    if ball.rect.colliderect(redplayer.rect) or ball.rect.colliderect(blackplayer.rect):
-        if red == 1:
-            red = 0
-            black = 1
-            if updown in range(1,6):
-                updown = random.choice([1,2,3,4,5])
-            else:
-                updown = random.choice([-1,-2,-3,-4,-5])
-        else:
-            red = 1
-            black = 0
-            if updown in range(1,6):
-                updown = random.choice([1,2,3,4,5])
-            else:
-                updown = random.choice([-1,-2,-3,-4,-5])
-    if ball.rect.colliderect(upwall.rect):
-        updown = random.randint(1,5)
-    if ball.rect.colliderect(downwall.rect):
-        updown = random.randint(-5,-1)
-
-    if ball.rect.center[0] > 820 or ball.rect.center[0] < -20:
-        screen.blit(end_game_screen, (0,0))
+    if flag == False:
+        screen.blit(splash_screen, (0,0))
+        press_space = bigfont.render('Press Space to Start', True, WHITE)
+        press_space_rect = press_space.get_rect()
+        press_space_rect.center = (401, 145)
+        press_esc = smallfont.render('Esc to Quit', True, WHITE)
+        press_esc_rect = press_esc.get_rect()
+        press_esc_rect.center = (400, 407)
+        screen.blit(press_space, press_space_rect)
+        screen.blit(press_esc, press_esc_rect)
         pygame.display.update()
-        time.sleep(2.5)
-        pygame.quit()
-        sys.exit()
-    print(time.time()-start_time)
-    
-    if round(time.time()-start_time)>1 and int(time.time()-start_time) % i == 0:
-        ball_speed += 1
-        paddle_speed += 1
-        i=i+20
+    if presses[K_SPACE] and flag == False:
+        flag = True
+    elif flag == True:
+        
+        screen.fill(WHITE)
+        for entity in all_sprites:
+            screen.blit(entity.image, entity.rect)
+            entity.move()
+        if ball.rect.colliderect(redplayer.rect) or ball.rect.colliderect(blackplayer.rect):
+            if red == 1:
+                red = 0
+                black = 1
+                if updown in range(1,6):
+                    updown = random.choice([1,2,3,4,5])
+                else:
+                    updown = random.choice([-1,-2,-3,-4,-5])
+            else:
+                red = 1
+                black = 0
+                if updown in range(1,6):
+                    updown = random.choice([1,2,3,4,5])
+                else:
+                    updown = random.choice([-1,-2,-3,-4,-5])
+        if ball.rect.colliderect(upwall.rect):
+            updown = random.randint(1,5)
+        if ball.rect.colliderect(downwall.rect):
+            updown = random.randint(-5,-1)
+
+        if ball.rect.center[0] > 820 or ball.rect.center[0] < -20:
+            screen.blit(end_game_screen, (0,0))
+            pygame.display.update()
+            time.sleep(2.5)
+            pygame.quit()
+            sys.exit()
+        
+        if round(time.time()-start_time)>1 and int(time.time()-start_time) % i == 0:
+            ball_speed += 1
+            paddle_speed += 1
+            i=i+20
 
 
-    pygame.display.update()
-    fps.tick(FPS)
+        pygame.display.update()
+        fps.tick(FPS)
