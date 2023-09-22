@@ -170,10 +170,11 @@ while q:
         global paddley, bally
         paddley = blackplayer.rect.center[1]
         bally = ball.rect.center[1]
-        if bally > paddley:
-            blackplayer.rect.move_ip(0, (paddle_speed-8))
-        if bally < paddley:
-            blackplayer.rect.move_ip(0, -1*(paddle_speed-8))
+        ballx = ball.rect.center[0]
+        if bally > paddley and ballx < 400:
+            blackplayer.rect.move_ip(0, (paddle_speed-4))
+        if bally < paddley and ballx < 400:
+            blackplayer.rect.move_ip(0, -1*(paddle_speed-4))
         if ball.rect.colliderect(redplayer.rect) or ball.rect.colliderect(blackplayer.rect):
             if red == 1:
                 red = 0
@@ -206,6 +207,6 @@ while q:
             paddle_speed += 0.5
             i=i+20
 
-
+        time_taken = round(time.time()-start_time)
         pygame.display.update()
         fps.tick(FPS)
