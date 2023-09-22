@@ -20,7 +20,7 @@ fps = pygame.time.Clock()
 screen = pygame.display.set_mode((800, 600))
 screen.fill(WHITE)
 end_game_screen = pygame.image.load("gameover.jpeg")
-splash_screen = pygame.image.load("splash screen.png")
+#splash_screen = pygame.image.load("splash screen.png")
 bigfont = pygame.font.Font('freesansbold.ttf', 30)
 smallfont = pygame.font.Font('freesansbold.ttf', 20)
 
@@ -42,11 +42,6 @@ class Paddles(pygame.sprite.Sprite):
                 self.rect.move_ip(0, -1*paddle_speed)
             if pressed_keys[K_s]:
                 self.rect.move_ip(0, paddle_speed)
-    def ai(self):
-        if updown > 0:
-            self.rect.move_ip(0, (paddle_speed-7))
-        if updown < 0:
-            self.rect.move_ip(0, -1*(paddle_speed-7))
 class Walls(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__() 
@@ -106,7 +101,7 @@ while q:
         pvp_rect = pvp.get_rect()
         pvp_rect.center = (201, 145)
 
-        pve = bigfont.render('Space for P V Computer', True, BLUE)
+        pve = bigfont.render('Enter for P V Computer', True, BLUE)
         pve_rect = pve.get_rect()
         pve_rect.center = (551, 145)
 
@@ -171,8 +166,14 @@ while q:
         for entity in all_sprites:
             screen.blit(entity.image, entity.rect)
             entity.move()
-            if entity == blackplayer:
-                entity.ai()
+        
+        global paddley, bally
+        paddley = blackplayer.rect.center[1]
+        bally = ball.rect.center[1]
+        if bally > paddley:
+            blackplayer.rect.move_ip(0, (paddle_speed-8))
+        if bally < paddley:
+            blackplayer.rect.move_ip(0, -1*(paddle_speed-8))
         if ball.rect.colliderect(redplayer.rect) or ball.rect.colliderect(blackplayer.rect):
             if red == 1:
                 red = 0
@@ -202,7 +203,7 @@ while q:
         
         if round(time.time()-start_time)>1 and int(time.time()-start_time) % i == 0:
             ball_speed += 1
-            paddle_speed += 1
+            paddle_speed += 0.5
             i=i+20
 
 
